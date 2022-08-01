@@ -1,17 +1,17 @@
-const Snippet = ({image, title, time, content}) => {
+const Snippet = ({ image, title, time, content }) => {
     return ( 
-        <div className="p-2" style={{ width: '100%' }}>
+        <div className="p-2 text-start" style={{ width: '100%' }}>
             {
                 (image) && <img
                     alt={title}
                     src={image}
-                    height="300"
+                    height="200"
                     className="d-inline-block align-top w-100 mb-2"
                 />
             }
             <div className="text-xsmall">Front end - 1 Hour Ago</div>
             <h6 className="fw-bold mt-2">{title}</h6>
-            <p className="text-small" dangerouslySetInnerHTML={{__html: content}}></p>
+            <div className="text-small mb-3" dangerouslySetInnerHTML={{__html: content}}></div>
             <div className="d-flex flex-wrap justify-content-between align-items-center fs-6">
                 <span className="text-small">3 min Read</span>
                 <a href="/">
