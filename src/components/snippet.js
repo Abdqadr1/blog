@@ -14,7 +14,7 @@ const Snippet = ({ image, title, time, content }) => {
             <div className="text-small mb-3" dangerouslySetInnerHTML={{__html: content}}></div>
             <div className="d-flex flex-wrap justify-content-between align-items-center fs-6">
                 <span className="text-small">3 min Read</span>
-                <a href="/">
+                <a href="/blog">
                     <span className="text-small">Read Full </span>
                     <span className="material-icons-outlined text-small">arrow_right_alt</span>
                 </a>

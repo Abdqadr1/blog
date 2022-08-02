@@ -3,6 +3,7 @@ import './App.css';
 import Home from './components/home';
 import NavBar from "./components/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
+import BlogFull from "./components/blogfull";
 
 function App() {
   return (
@@ -10,7 +11,8 @@ function App() {
       <NavBar />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element = {<Home />}></Route>
+          <Route path="/" element={<Home />} />
+          <Route path="/blog" element={<BlogFull />} />
         </Routes>
       </BrowserRouter>
     </div>
