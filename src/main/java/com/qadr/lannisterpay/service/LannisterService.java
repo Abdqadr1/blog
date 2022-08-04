@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,9 +38,9 @@ public record LannisterService() {
 
         List<SplitInfo> ratio = splitInfos.stream()
                 .filter(splitInfo -> splitInfo.getSplitType().equals(SplitType.RATIO)).collect(Collectors.toList());
-        computeRatio(transaction, ratio, response);
+        computeRatio(transaction.getAmount(), ratio, response);
 
-        response.setBalance(transaction.getAmount());
+        response.setBalance(BigDecimal.ZERO);
         return response;
     }
 
@@ -57,16 +58,14 @@ public record LannisterService() {
         });
     }
 
-    private void computeRatio(Transaction transaction,
+    private void computeRatio(BigDecimal amount,
                               List<SplitInfo> infos, SplitResponse response) {
         double ratio = infos.stream()
                 .mapToDouble(info-> info.getSplitValue().doubleValue())
                 .sum();
         infos.forEach(splitInfo -> {
-            BigDecimal amount = transaction.getAmount();
-            BigDecimal value = splitInfo.getSplitValue().divide(BigDecimal.valueOf(ratio)).multiply(amount);
-            BigDecimal newAmount = amount.subtract(value);
-            transaction.setAmount(newAmount);
+            BigDecimal value = splitInfo.getSplitValue()
+                    .divide(BigDecimal.valueOf(ratio), 2 , RoundingMode.HALF_UP).multiply(amount);
             SplitBreakdown breakdown = new SplitBreakdown();
             breakdown.setSplitEntityId(splitInfo.getSplitEntityId());
             breakdown.setAmount(value.doubleValue());

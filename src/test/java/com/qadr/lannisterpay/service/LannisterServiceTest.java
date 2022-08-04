@@ -8,6 +8,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,22 @@ class LannisterServiceTest {
                         "LNPYACC003",
                         BigDecimal.valueOf(2),
                         SplitType.RATIO
+                ),
+                new SplitInfo(
+                        "LNPYACT0011",
+                        BigDecimal.valueOf(188),
+                        SplitType.FLAT
+                ),
+                new SplitInfo(
+                        "LNPYACC003",
+                        BigDecimal.valueOf(7),
+                        SplitType.RATIO
+                ),
+
+                new SplitInfo(
+                        "LNPYACC0014",
+                        BigDecimal.valueOf(5.7),
+                        SplitType.PERCENTAGE
                 )
         );
         transaction.setSplitInfo(infos);
@@ -50,12 +68,14 @@ class LannisterServiceTest {
     void testComputeTransaction() {
         BigDecimal amount = transaction.getAmount();
         SplitResponse response = service.compute(transaction);
+        List<SplitBreakdown> splitBreakdown = response.getSplitBreakdown();
+        System.out.println(splitBreakdown);
         assertThat(response.getId()).isEqualTo(transaction.getId());
         assertThat(response.getBalance().doubleValue()).isEqualTo(0f);
-        List<SplitBreakdown> splitBreakdown = response.getSplitBreakdown();
         double sum = splitBreakdown.stream().mapToDouble(SplitBreakdown::getAmount).sum();
-
-        assertThat(BigDecimal.valueOf(sum)).isEqualTo(amount);
+        BigDecimal result = BigDecimal.valueOf(sum);
+        result = result.setScale(2, RoundingMode.HALF_EVEN);
+        assertThat(result).isEqualTo(amount);
         System.out.println(transaction.getAmount());
         System.out.println(response.getBalance());
     }
