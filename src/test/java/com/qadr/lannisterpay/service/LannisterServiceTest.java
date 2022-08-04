@@ -8,14 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class LannisterServiceTest {
@@ -27,7 +25,7 @@ class LannisterServiceTest {
     @BeforeEach
     void runBeforeEachTest(){
         transaction.setAmount(BigDecimal.valueOf(25252.93));
-        transaction.setId(7933L);
+        transaction.setID(7933L);
         List<SplitInfo> infos = List.of(
                 new SplitInfo(
                         "LNPYACT0011",
@@ -70,7 +68,7 @@ class LannisterServiceTest {
         SplitResponse response = service.compute(transaction);
         List<SplitBreakdown> splitBreakdown = response.getSplitBreakdown();
         System.out.println(splitBreakdown);
-        assertThat(response.getId()).isEqualTo(transaction.getId());
+        assertThat(response.getID()).isEqualTo(transaction.getID());
         assertThat(response.getBalance().doubleValue()).isEqualTo(0f);
         double sum = splitBreakdown.stream().mapToDouble(SplitBreakdown::getAmount).sum();
         BigDecimal result = BigDecimal.valueOf(sum);

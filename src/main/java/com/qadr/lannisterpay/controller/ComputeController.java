@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 public record ComputeController(LannisterService service) {
 
     @PostMapping("/split-payments/compute")
-    public SplitResponse compute(@RequestBody Transaction transaction){
+    public SplitResponse compute(@RequestBody Transaction transaction, HttpServletRequest request){
         return service.compute(transaction);
     }
 }

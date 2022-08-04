@@ -10,15 +10,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,12 +26,12 @@ class ComputeControllerTest {
     @Autowired TestRestTemplate restTemplate;
     @Autowired ObjectMapper objectMapper;
     @Autowired MockMvc mockMvc;
-    private Transaction transaction = new Transaction();
+    private final Transaction transaction = new Transaction();
 
     @BeforeEach
     void runBeforeEachTest(){
         transaction.setAmount(BigDecimal.valueOf(25252.93));
-        transaction.setId(7933L);
+        transaction.setID(7933L);
         List<SplitInfo> infos = List.of(
                 new SplitInfo(
                         "LNPYACT0011",
@@ -63,10 +60,10 @@ class ComputeControllerTest {
                 transaction,
                 SplitResponse.class
         );
-        assertThat(response.getId()).isEqualTo(transaction.getId());
+        assertThat(response.getID()).isEqualTo(transaction.getID());
         System.out.println(response);
 
-        assertThat(response.getId()).isEqualTo(transaction.getId());
+        assertThat(response.getID()).isEqualTo(transaction.getID());
         assertThat(response.getBalance().doubleValue()).isEqualTo(0f);
         List<SplitBreakdown> splitBreakdown = response.getSplitBreakdown();
         double sum = splitBreakdown.stream().mapToDouble(SplitBreakdown::getAmount).sum();

@@ -1,9 +1,13 @@
 package com.qadr.lannisterpay.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class SplitBreakdown {
-    private String splitEntityId;
-    private Double amount;
+    @JsonProperty("SplitEntityId")
+    private String SplitEntityId;
+
+    @JsonProperty("Amount")
+    private Double Amount;
 }

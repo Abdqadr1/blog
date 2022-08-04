@@ -1,5 +1,6 @@
 package com.qadr.lannisterpay.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,7 +9,12 @@ import java.util.List;
 
 @Data
 public class SplitResponse {
-    private Long id;
-    private BigDecimal balance;
-    private List<SplitBreakdown> splitBreakdown = new ArrayList<>();
+    @JsonProperty("ID")
+    private Long ID;
+
+    @JsonProperty("Balance")
+    private BigDecimal Balance;
+
+    @JsonProperty("SplitBreakdown")
+    private List<SplitBreakdown> SplitBreakdown = new ArrayList<>();
 }

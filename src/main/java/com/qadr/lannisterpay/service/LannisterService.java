@@ -26,7 +26,7 @@ public record LannisterService() {
 
         List<SplitInfo> splitInfos = transaction.getSplitInfo();
         SplitResponse response = new SplitResponse();
-        response.setId(transaction.getId());
+        response.setID(transaction.getID());
 
         List<SplitInfo> flats = splitInfos.stream()
                 .filter(splitInfo -> splitInfo.getSplitType().equals(SplitType.FLAT)).collect(Collectors.toList());
@@ -38,9 +38,9 @@ public record LannisterService() {
 
         List<SplitInfo> ratio = splitInfos.stream()
                 .filter(splitInfo -> splitInfo.getSplitType().equals(SplitType.RATIO)).collect(Collectors.toList());
-        computeRatio(transaction.getAmount(), ratio, response);
+        computeRatio(transaction, ratio, response);
 
-        response.setBalance(BigDecimal.ZERO);
+        response.setBalance(transaction.getAmount());
         return response;
     }
 
@@ -58,19 +58,22 @@ public record LannisterService() {
         });
     }
 
-    private void computeRatio(BigDecimal amount,
+    private void computeRatio(Transaction transaction,
                               List<SplitInfo> infos, SplitResponse response) {
+        final BigDecimal[] newBalance = {new BigDecimal(transaction.getAmount().toString())};
         double ratio = infos.stream()
                 .mapToDouble(info-> info.getSplitValue().doubleValue())
                 .sum();
         infos.forEach(splitInfo -> {
             BigDecimal value = splitInfo.getSplitValue()
-                    .divide(BigDecimal.valueOf(ratio), 2 , RoundingMode.HALF_UP).multiply(amount);
+                    .divide(BigDecimal.valueOf(ratio), 2 , RoundingMode.HALF_UP).multiply(transaction.getAmount());
             SplitBreakdown breakdown = new SplitBreakdown();
             breakdown.setSplitEntityId(splitInfo.getSplitEntityId());
             breakdown.setAmount(value.doubleValue());
             response.getSplitBreakdown().add(breakdown);
+            newBalance[0] = newBalance[0].subtract(value);
         });
+        transaction.setAmount(newBalance[0]);
     }
 
     private void computeFlat(Transaction transaction,
